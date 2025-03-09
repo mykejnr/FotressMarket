@@ -8,13 +8,23 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/appTextBoxLabelText"
         android:text="Label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:labelFor="@+id/editText"/>
+        android:labelFor="@+id/appTextBoxEditText" />
+
+    <TextView
+        android:id="@+id/appTextBoxErrorText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="This is an error message"
+        android:visibility="gone"
+        android:textColor="@color/design_default_color_error" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/appTextBoxEditText"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:autofillHints="name"

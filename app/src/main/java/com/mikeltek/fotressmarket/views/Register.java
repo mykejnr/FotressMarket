@@ -1,27 +1,19 @@
 package com.mikeltek.fotressmarket.views;
 
 import android.os.Bundle;
-import android.text.InputType;
-import android.widget.EditText;
-import android.widget.TextView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.mikeltek.fotressmarket.R;
-import com.mikeltek.fotressmarket.forms.AppFormValidator;
 import com.mikeltek.fotressmarket.forms.FormSet;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.mikeltek.fotressmarket.forms.components.AppTextBox;
 import java.util.Optional;
 
 public class Register extends AppCompatActivity {
-    FormSet formSet = new FormSet();
+    FormSet formSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,45 +26,47 @@ public class Register extends AppCompatActivity {
             return insets;
         });
 
-        registerValidators();
+        initFormSet();
+
         var btnRegister = findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(v -> { register(); });
     }
 
-    private void register() {
-        if (!formSet.isValid()) return;
+    private void initFormSet() {
+        var container = (ConstraintLayout)findViewById(R.id.registerContent);
+        formSet = new FormSet(container);
+        registerValidators();
     }
 
     private void registerValidators() {
-        formSet.register( findViewById( R.id.editTextFirstname ) );
-        formSet.register( findViewById( R.id.editTextOtherNames ) );
-        formSet.register( findViewById( R.id.editTextEmail ) );
-        formSet.register( findViewById( R.id.editTextPassword), List.of(
-            FormSet.Required,
-            this::validatePassword
-        ));
-        formSet.register( findViewById( R.id.editTextConfirmPassword ), List.of(
-                FormSet.Required,
-                this::confirmPassword
-        ));
+        formSet.register(R.id.appTextSurname, FormSet.Required);
+        formSet.register(R.id.appTextOtherNames, FormSet.Required);
+        formSet.register(R.id.appTextEmail, FormSet.Required);
+        formSet.register(R.id.appTextPassword, this::validatePassword);
+        formSet.register(R.id.appTextConfirmPassword, this::confirmPassword);
     }
 
-    private void updateViewErrors() {
-        ConstraintLayout layout = findViewById(R.id.content);
-        int count = layout.getChildCount();
-        for (int i = 0; i < count; i++) {
-            var c = layout.getChildAt(i);
-            if (c instanceof TextView) {
-                ((TextView) c).setText("");
-            }
-        }
+    private void register() {
+        if (!formSet.isValid()) return;
+        var values = formSet.getValues();
     }
 
     private Optional<String> validatePassword(String password) {
-        return Optional.empty();
+        var errors = FormSet.Required.validate(password);
+        if (errors.isPresent()) return errors;
+        if ( !testPassword(password) )
+            errors = Optional.of("Password must contain uppercase, lowercase, special character");
+        return errors;
+    }
+    private Optional<String> confirmPassword(String cPassword) {
+        var view = (AppTextBox)findViewById(R.id.appTextPassword);
+        if ( cPassword.equals(view.getValue()) )
+            return Optional.empty();
+        return Optional.of("Passwords do not match");
     }
 
-    private Optional<String> confirmPassword(String cPassword) {
-        return Optional.empty();
+    private boolean testPassword(String password) {
+        // Test password strength
+        return true;
     }
 }

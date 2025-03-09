@@ -1,8 +1,7 @@
 package com.mikeltek.fotressmarket.forms;
 
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.widget.EditText;
+import android.view.ViewGroup;
+import com.mikeltek.fotressmarket.forms.components.AppTextBox;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +12,10 @@ public class FormSet {
 
     private static class Field {
         int id;
+        AppTextBox field;
         List<AppFormValidator> validators;
         String value = "";
+        List<String> errors;
     }
 
     public static final AppFormValidator Required = value -> {
@@ -24,64 +25,104 @@ public class FormSet {
     };
 
     private final Map<Integer, Field> registry = new HashMap<>();
-    private final Map<Integer, List<String>> errors = new HashMap<>();
+    private final Map<Integer, List<AppFormValidator>> validators;
+
+    public FormSet(ViewGroup formContainer) {
+        validators = new HashMap<>();
+        register(formContainer);
+    }
+
+    public FormSet(ViewGroup formContainer, HashMap<Integer, List<AppFormValidator>> fieldValidators) {
+        validators = fieldValidators;
+        register(formContainer);
+    }
 
     public void unregister(int id) {
         registry.remove(id);
     }
 
-    public void register(EditText view) {
-        ArrayList<AppFormValidator> v = new ArrayList<>();
-        v.add(FormSet.Required);
-        register(view, v);
+    private void register (ViewGroup formContainer) {
+        int count = formContainer.getChildCount();
+        for (int i = 0; i < count; i++) {
+            var c = formContainer.getChildAt(i);
+            if (c instanceof AppTextBox) registerField((AppTextBox) c);
+        }
     }
 
-    public void register(EditText view, List<AppFormValidator> validators)
-    {
+    private void registerField(AppTextBox textBox) {
         var field = new Field();
-        field.id = view.getId();
-        field.validators = validators;
+        field.field = textBox;
+
+        field.id = textBox.getId();
+        field.validators = validators.getOrDefault(field.id, new ArrayList<>());
         registry.put(field.id, field);
 
-        view.addTextChangedListener(new TextWatcher() {
-            private final Field f = field;
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+        textBox.registerOnChange(s -> field.value = s);
+    }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
+    public void register(int id, AppFormValidator validator) {
+        var field = registry.get(id);
+        assert field != null;
+        field.validators.add(validator);
+    }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                f.value = s.toString();
-            }
-        });
+    public void register(int id, List<AppFormValidator> validators) {
+        var field = registry.get(id);
+        assert field != null;
+        field.validators.addAll(validators);
     }
 
     public Boolean isValid() {
-        validate();
-        return errors.isEmpty();
+        return validate();
     }
     
-    public void validate()
+    private boolean validate()
     {
-        errors.clear();
+        var hasErrors = false;
 
         for (var key : registry.keySet())
         {
             Field field = registry.get(key);
             assert field != null; // This is really not needed
-            List<String> fieldErrors = new ArrayList<>(field.validators.size());
+            field.errors = new ArrayList<>(); // reset errors
 
             field.validators.forEach(v -> {
                 var err = v.validate(field.value);
-                err.ifPresent(fieldErrors::add);
+                err.ifPresent(field.errors::add);
             });
 
-            if (!fieldErrors.isEmpty())
-                errors.put(field.id, fieldErrors);
+            if (!field.errors.isEmpty()) {
+                hasErrors = true;
+                field.field.updateViewErrors(field.errors);
+            }
+            else {
+                field.field.clearViewErrors();
+            }
         }
+
+        return hasErrors;
+    }
+
+    public Map<Integer, List<String>> getErrors() {
+        var errors = new HashMap<Integer, List<String>>();
+
+        for (var key : registry.keySet()) {
+            Field field = registry.get(key);
+            assert field != null;
+            if (!field.errors.isEmpty())
+                errors.put(field.id, field.errors);
+        }
+        return errors;
+    }
+
+    public  Map<Integer, String> getValues() {
+        var values = new HashMap<Integer, String>();
+
+        for (var key : registry.keySet()) {
+            Field field = registry.get(key);
+            assert field != null;
+            values.put(field.id, field.value);
+        }
+        return values;
     }
 }
