@@ -1,6 +1,7 @@
 package com.mikeltek.fotressmarket.views;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.widget.EditText;
 import android.widget.TextView;
 
