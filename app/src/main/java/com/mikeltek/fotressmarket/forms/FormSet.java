@@ -1,7 +1,6 @@
 package com.mikeltek.fotressmarket.forms;
 
 import android.view.ViewGroup;
-import com.mikeltek.fotressmarket.forms.components.AppTextBox;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +11,7 @@ public class FormSet {
 
     private static class Field {
         int id;
-        AppTextBox field;
+        AppFormField field;
         List<AppFormValidator> validators;
         String value = "";
         List<String> errors;
@@ -45,19 +44,19 @@ public class FormSet {
         int count = formContainer.getChildCount();
         for (int i = 0; i < count; i++) {
             var c = formContainer.getChildAt(i);
-            if (c instanceof AppTextBox) registerField((AppTextBox) c);
+            if (c instanceof AppFormField) registerField((AppFormField) c);
         }
     }
 
-    private void registerField(AppTextBox textBox) {
+    private void registerField(AppFormField formField) {
         var field = new Field();
-        field.field = textBox;
+        field.field = formField;
 
-        field.id = textBox.getId();
+        field.id = formField.getId();
         field.validators = validators.getOrDefault(field.id, new ArrayList<>());
         registry.put(field.id, field);
 
-        textBox.registerOnChange(s -> field.value = s);
+        formField.registerOnChange(s -> field.value = s);
     }
 
     public void register(int id, AppFormValidator validator) {

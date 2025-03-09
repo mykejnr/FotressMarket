@@ -13,13 +13,12 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.mikeltek.fotressmarket.R;
+import com.mikeltek.fotressmarket.forms.AppFormField;
 import com.mikeltek.fotressmarket.forms.AppFormFieldOnChange;
-import com.mikeltek.fotressmarket.forms.AppFormValidator;
-import com.mikeltek.fotressmarket.forms.FormSet;
 
 import java.util.List;
 
-public class AppTextBox extends LinearLayout {
+public class AppTextBox extends LinearLayout implements AppFormField {
     private String label = "";
     private int textType = 0;
 
@@ -50,20 +49,24 @@ public class AppTextBox extends LinearLayout {
         textBox.setInputType(textType);
     }
 
+    @Override
     public void updateViewErrors(List<String> errors) {
         errorLabel.setText(errors.get(0));
         errorLabel.setVisibility(VISIBLE);
     }
 
+    @Override
     public String getValue() {
         return textBox.getText().toString();
     }
 
+    @Override
     public void clearViewErrors() {
         errorLabel.setText("");
         errorLabel.setVisibility(INVISIBLE);
     }
 
+    @Override
     public void registerOnChange(AppFormFieldOnChange callBack)
     {
         textBox.addTextChangedListener(new TextWatcher() {

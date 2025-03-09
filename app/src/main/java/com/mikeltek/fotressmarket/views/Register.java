@@ -29,7 +29,7 @@ public class Register extends AppCompatActivity {
         initFormSet();
 
         var btnRegister = findViewById(R.id.btnRegister);
-        btnRegister.setOnClickListener(v -> { register(); });
+        btnRegister.setOnClickListener(v -> register() );
     }
 
     private void initFormSet() {
@@ -48,7 +48,6 @@ public class Register extends AppCompatActivity {
 
     private void register() {
         if (!formSet.isValid()) return;
-        var values = formSet.getValues();
     }
 
     private Optional<String> validatePassword(String password) {
