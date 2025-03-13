@@ -77,7 +77,7 @@ public class FormSet {
     
     private boolean validate()
     {
-        var hasErrors = false;
+        var valid = true;
 
         for (var key : registry.keySet())
         {
@@ -90,16 +90,16 @@ public class FormSet {
                 err.ifPresent(field.errors::add);
             });
 
-            if (!field.errors.isEmpty()) {
-                hasErrors = true;
-                field.field.updateViewErrors(field.errors);
+            if (field.errors.isEmpty()) {
+                field.field.clearViewErrors();
             }
             else {
-                field.field.clearViewErrors();
+                valid = false;
+                field.field.updateViewErrors(field.errors);
             }
         }
 
-        return hasErrors;
+        return valid;
     }
 
     public Map<Integer, List<String>> getErrors() {

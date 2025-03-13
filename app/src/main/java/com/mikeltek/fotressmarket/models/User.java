@@ -13,8 +13,8 @@ import androidx.room.PrimaryKey;
 public class User {
     @PrimaryKey(autoGenerate = true)
     public int id;
-    @ColumnInfo(name = "first_name")
-    public String firstName;
+    @ColumnInfo(name = "surname")
+    public String surname;
     @ColumnInfo(name = "other_names")
     public String otherNames;
     public String email;

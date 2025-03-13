@@ -8,20 +8,26 @@ import androidx.room.Update;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
+
 @Dao
 public interface UserDao {
     @Query("SELECT * FROM user")
-    List<User> getAll();
+    Single<List<User>> getAll();
 
     @Query("SELECT * FROM user WHERE id = :userId")
-    User get(int userId);
+    Single<User> get(int userId);
+
+    @Query("SELECT * FROM user WHERE email = :email")
+    Single<User> getByEmail(String email);
 
     @Insert
-    void insert(User user);
+    Completable insert(User user);
 
     @Delete
-    void delete(User user);
+    Completable delete(User user);
 
     @Update
-    void update(User user);
+    Completable update(User user);
 }

@@ -1,6 +1,10 @@
 package com.mikeltek.fotressmarket.views;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -10,10 +14,14 @@ import androidx.core.view.WindowInsetsCompat;
 import com.mikeltek.fotressmarket.R;
 import com.mikeltek.fotressmarket.forms.FormSet;
 import com.mikeltek.fotressmarket.forms.components.AppTextBox;
+import com.mikeltek.fotressmarket.models.User;
+import com.mikeltek.fotressmarket.services.AuthService;
+
 import java.util.Optional;
 
 public class Register extends AppCompatActivity {
     FormSet formSet;
+    AuthService authService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +34,13 @@ public class Register extends AppCompatActivity {
             return insets;
         });
 
+        authService = new AuthService(getApplicationContext());
         initFormSet();
 
-        var btnRegister = findViewById(R.id.btnRegister);
-        btnRegister.setOnClickListener(v -> register() );
+        findViewById(R.id.btnRegister).setOnClickListener(v -> register() );
+        
+        findViewById(R.id.register_buttonLogin)
+            .setOnClickListener(v -> goToLogin(false) );
     }
 
     private void initFormSet() {
@@ -48,6 +59,32 @@ public class Register extends AppCompatActivity {
 
     private void register() {
         if (!formSet.isValid()) return;
+
+        var values = formSet.getValues();
+
+        var user = new User();
+        user.surname = values.get(R.id.appTextSurname);
+        user.otherNames = values.get(R.id.appTextOtherNames);
+        user.email = values.get(R.id.appTextEmail);
+
+        authService.createUserAsync(user, values.get(R.id.appTextPassword))
+            .doOnError(err -> showRegisterError(err.getMessage()))
+            .subscribe(() -> goToLogin(true));
+
+    }
+
+    private void showRegisterError(String errMessage) {
+        var toast = Toast.makeText(this, errMessage, Toast.LENGTH_LONG);
+        toast.show();
+    }
+
+    private void goToLogin(boolean showRegisterToast) {
+        if (showRegisterToast) {
+            var msg = "You have registered successfully. You can now login";
+            var toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
+            toast.show();
+        }
+        startActivity( new Intent(Register.this, Login.class) );
     }
 
     private Optional<String> validatePassword(String password) {
@@ -57,6 +94,7 @@ public class Register extends AppCompatActivity {
             errors = Optional.of("Password must contain uppercase, lowercase, special character");
         return errors;
     }
+
     private Optional<String> confirmPassword(String cPassword) {
         var view = (AppTextBox)findViewById(R.id.appTextPassword);
         if ( cPassword.equals(view.getValue()) )

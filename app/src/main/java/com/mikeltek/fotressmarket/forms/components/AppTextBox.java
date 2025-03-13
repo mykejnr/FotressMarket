@@ -62,8 +62,7 @@ public class AppTextBox extends LinearLayout implements AppFormField {
 
     @Override
     public void clearViewErrors() {
-        errorLabel.setText("");
-        errorLabel.setVisibility(INVISIBLE);
+        errorLabel.setVisibility(GONE);
     }
 
     @Override
