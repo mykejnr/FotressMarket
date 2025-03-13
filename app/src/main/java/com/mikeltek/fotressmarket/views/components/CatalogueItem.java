@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import com.mikeltek.fotressmarket.R;
+import com.mikeltek.fotressmarket.services.AppImageRepository;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -27,6 +29,8 @@ public class CatalogueItem extends LinearLayout {
     TextView txtPrice;
     TextView txtImageCaption;
     ImageView imgProductImage;
+
+    AppImageRepository imageRepo = AppImageRepository.getInstance();
 
 
     public CatalogueItem(Context context, @Nullable AttributeSet attrs) {
@@ -59,14 +63,15 @@ public class CatalogueItem extends LinearLayout {
 
     private void renderImage() {
         renderImageCaption("Loading image . . .");
-        var d  = Single.fromCallable(this::fetchImage)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .onErrorComplete(err -> {
-                renderImageCaption(err.getMessage());
-                return true;
-            })
-            .subscribe(this::renderImageContent);
+
+        var d = imageRepo.getRemote(this.imageSrc)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .onErrorComplete(err -> {
+                    renderImageCaption(err.getMessage());
+                    return true;
+                })
+                .subscribe(this::renderImageContent);
     }
 
     private void renderImageCaption(String msg) {
