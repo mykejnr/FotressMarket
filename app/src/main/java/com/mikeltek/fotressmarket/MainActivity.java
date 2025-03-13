@@ -26,24 +26,24 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        EditText editTextUsername, editTextPassword;
-        editTextUsername = findViewById(R.id.editTextUsername);
-        editTextPassword = findViewById(R.id.editTextPassword);
-        var btnLogin = findViewById(R.id.buttonLogin);
-
-        btnLogin.setOnClickListener(v -> {
-            var username = editTextPassword.getText().toString();
-            var password = editTextUsername.getText().toString();
-            User mike = new User();
-
-//            if ( !mike.confirmCredentials(username, password) ) {
-//                Toast.makeText(MainActivity.this, "Invalid email or password", Toast.LENGTH_LONG)
-//                        .show();
-//                return;
-//            }
-
-//            Intent myIntent = new Intent(MainActivity.this, HomePage.class);
-//            startActivity(myIntent);
-        });
+//        EditText editTextUsername, editTextPassword;
+//        editTextUsername = findViewById(R.id.editTextUsername);
+//        editTextPassword = findViewById(R.id.editTextPassword);
+//        var btnLogin = findViewById(R.id.buttonLogin);
+//
+//        btnLogin.setOnClickListener(v -> {
+//            var username = editTextPassword.getText().toString();
+//            var password = editTextUsername.getText().toString();
+//            User mike = new User();
+//
+////            if ( !mike.confirmCredentials(username, password) ) {
+////                Toast.makeText(MainActivity.this, "Invalid email or password", Toast.LENGTH_LONG)
+////                        .show();
+////                return;
+////            }
+//
+////            Intent myIntent = new Intent(MainActivity.this, HomePage.class);
+////            startActivity(myIntent);
+//        });
     }
 }

@@ -33,7 +33,7 @@ public class AppTextBox extends LinearLayout implements AppFormField {
 
     private void init(Context context, AttributeSet attrs) {
         inflate(context, R.layout.app_text_box, this);
-        try (TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AppTextBox, 0, 0)) {
+        try (TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AppTextBox)) {
             label = a.getString(R.styleable.AppTextBox_label);
             textType = a.getInt(R.styleable.AppTextBox_android_inputType, InputType.TYPE_CLASS_TEXT);
         }

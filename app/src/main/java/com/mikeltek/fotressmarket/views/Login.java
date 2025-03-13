@@ -18,10 +18,13 @@ import com.mikeltek.fotressmarket.R;
 import com.mikeltek.fotressmarket.forms.FormSet;
 import com.mikeltek.fotressmarket.services.AuthService;
 
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+
 public class Login extends AppCompatActivity {
 
     FormSet formSet;
     AuthService authService;
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,12 @@ public class Login extends AppCompatActivity {
            .setOnClickListener(v -> gotoRegister());
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.dispose();
+    }
+
     private void initFormSet() {
         var container = (ConstraintLayout)findViewById(R.id.login_MainLayout);
         formSet = new FormSet(container);
@@ -61,18 +70,17 @@ public class Login extends AppCompatActivity {
         var email = values.get(R.id.login_appTextEmail);
         var password = values.get(R.id.login_appTextPassword);
 
-        authService.loginAsync(email, password)
-                .onErrorComplete( err -> {
-                    showLoginError(err.getMessage());
-                    return true;
-                })
-//            .doOnError(t -> showLoginError(t.getMessage()))
+        var d = authService.loginAsync(email, password)
+            .onErrorComplete( err -> {
+                showLoginError(err.getMessage());
+                return true;
+            })
             .subscribe(u -> gotoDashboard());
+
+        compositeDisposable.add(d);
     }
 
     private void showLoginError(String errMessage) {
-        Log.d("Login Failed", errMessage);
-        Log.d("Login Failed", "Thread: " + Thread.currentThread());
         var toast = Toast.makeText(this, errMessage, Toast.LENGTH_LONG);
         toast.show();
     }

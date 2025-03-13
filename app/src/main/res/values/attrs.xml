@@ -4,4 +4,9 @@
         <attr name="label" format="string" />
         <attr name="android:inputType" />
     </declare-styleable>
+    <declare-styleable name="CatalogueItem">
+        <attr name="productImageSrc" format="string" />
+        <attr name="productTitle" format="string" />
+        <attr name="productPrice" format="float" />
+    </declare-styleable>
 </resources>
