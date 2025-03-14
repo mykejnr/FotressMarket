@@ -18,7 +18,9 @@ import com.mikeltek.fotressmarket.R;
 import com.mikeltek.fotressmarket.forms.FormSet;
 import com.mikeltek.fotressmarket.services.AuthService;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class Login extends AppCompatActivity {
 
@@ -37,7 +39,7 @@ public class Login extends AppCompatActivity {
             return insets;
         });
 
-        authService = new AuthService(getApplicationContext());
+        authService = AuthService.getInstance(getApplicationContext());
         initFormSet();
 
         findViewById(R.id.login_buttonLogin)
@@ -71,6 +73,8 @@ public class Login extends AppCompatActivity {
         var password = values.get(R.id.login_appTextPassword);
 
         var d = authService.loginAsync(email, password)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .onErrorComplete( err -> {
                 showLoginError(err.getMessage());
                 return true;

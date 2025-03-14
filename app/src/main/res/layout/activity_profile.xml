@@ -51,10 +51,11 @@
                 android:paddingEnd="40dp"
                 >
                 <TextView
+                    android:id="@+id/profile_TextName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="#fff"
-                    android:text="Michael Mensah"
+                    android:text="..."
                     android:paddingBottom="20dp"
                     android:textSize="20sp"
                     android:fontFamily="sans-serif-black"

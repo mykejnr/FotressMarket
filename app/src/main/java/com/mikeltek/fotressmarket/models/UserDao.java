@@ -9,6 +9,7 @@ import androidx.room.Update;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
@@ -18,6 +19,9 @@ public interface UserDao {
 
     @Query("SELECT * FROM user WHERE id = :userId")
     Single<User> get(int userId);
+
+    @Query("SELECT * FROM user WHERE id = :userId")
+    Flowable<User> getForever(int userId);
 
     @Query("SELECT * FROM user WHERE email = :email")
     Single<User> getByEmail(String email);

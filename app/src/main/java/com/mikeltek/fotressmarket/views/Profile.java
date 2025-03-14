@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,8 +15,14 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.mikeltek.fotressmarket.MainActivity;
 import com.mikeltek.fotressmarket.R;
+import com.mikeltek.fotressmarket.services.AuthService;
 
 public class Profile extends AppCompatActivity {
+
+    private TextView txtName;
+    private TextView txtEmail;
+
+    private AuthService authService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +35,14 @@ public class Profile extends AppCompatActivity {
             return insets;
         });
 
+        authService = AuthService.getInstance(getApplicationContext());
+        init();
+    }
+
+    private void init() {
+        txtName = findViewById(R.id.profile_TextName);
+        txtEmail = findViewById(R.id.profile_TextEmail);
+        subscribeToAuthUser();
         configureHomeButton();
     }
 
@@ -37,5 +52,15 @@ public class Profile extends AppCompatActivity {
         btn.setOnClickListener(v ->
             startActivity(new Intent(Profile.this, MainActivity.class))
         );
+    }
+
+    private void subscribeToAuthUser() {
+        var d = authService.authUser.subscribe(u -> {
+            if (u.isEmpty()) return;
+            var user = u.get();
+            assert user != null;
+            txtName.setText(String.format("%s %s", user.otherNames, user.surname));
+            txtEmail.setText(user.email);
+        });
     }
 }

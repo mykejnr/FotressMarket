@@ -19,6 +19,8 @@ import com.mikeltek.fotressmarket.services.AuthService;
 
 import java.util.Optional;
 
+import io.reactivex.rxjava3.core.Single;
+
 public class Register extends AppCompatActivity {
     FormSet formSet;
     AuthService authService;
@@ -34,7 +36,7 @@ public class Register extends AppCompatActivity {
             return insets;
         });
 
-        authService = new AuthService(getApplicationContext());
+        authService = AuthService.getInstance(getApplicationContext());
         initFormSet();
 
         findViewById(R.id.btnRegister).setOnClickListener(v -> register() );
@@ -67,9 +69,14 @@ public class Register extends AppCompatActivity {
         user.otherNames = values.get(R.id.appTextOtherNames);
         user.email = values.get(R.id.appTextEmail);
 
-        authService.createUserAsync(user, values.get(R.id.appTextPassword))
-            .doOnError(err -> showRegisterError(err.getMessage()))
-            .subscribe(() -> goToLogin(true));
+        var d = authService.createUserAsync(user, values.get(R.id.appTextPassword))
+                .onErrorResumeNext(err -> {
+                    showRegisterError(err.getMessage());
+                    return Single.just(false);
+                })
+                .subscribe(created -> {
+                    if (created) goToLogin(true);
+                });
 
     }
 
