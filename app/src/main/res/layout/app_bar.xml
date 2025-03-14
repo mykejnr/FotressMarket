@@ -18,7 +18,7 @@
         android:layout_height="match_parent" >
 
         <ImageButton
-            android:id="@+id/mainActivity_BtnUser"
+            android:id="@+id/appBar_BtnUser"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="5dp"
@@ -28,10 +28,11 @@
             app:tint="@color/cardview_light_background"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
         <TextView
-            android:id="@+id/mainActivity_TextAppTitle"
+            android:id="@+id/appBar_TextAppTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart ="10dp"
@@ -41,10 +42,10 @@
             android:textSize="25sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/mainActivity_BtnUser"/>
+            app:layout_constraintStart_toEndOf="@id/appBar_BtnUser"/>
 
         <ImageButton
-            android:id="@+id/mainActivity_BtnCart"
+            android:id="@+id/appBar_BtnCart"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="5dp"

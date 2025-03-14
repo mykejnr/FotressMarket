@@ -1,5 +1,6 @@
 package com.mikeltek.fotressmarket;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,9 @@ import androidx.core.view.WindowInsetsCompat;
 import com.mikeltek.fotressmarket.models.AppDatabase;
 import com.mikeltek.fotressmarket.models.Product;
 import com.mikeltek.fotressmarket.models.ProductDao;
+import com.mikeltek.fotressmarket.views.Login;
+import com.mikeltek.fotressmarket.views.Profile;
+import com.mikeltek.fotressmarket.views.Register;
 import com.mikeltek.fotressmarket.views.components.CatalogueItem;
 import java.util.List;
 
@@ -47,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        findViewById(R.id.mainActivity_BtnUser).setOnClickListener(v -> gotoProfile());
+        findViewById(R.id.appBar_BtnUser).setOnClickListener(v -> gotoProfile());
         productContainer = findViewById(R.id.mainActivity_ProductsContainer);
         fetchProducts();
     }
@@ -98,6 +102,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void gotoProfile() {
-
+        startActivity(new Intent(MainActivity.this, Profile.class));
     }
 }
